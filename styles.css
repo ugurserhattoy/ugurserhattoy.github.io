@@ -1,4 +1,40 @@
+:root {
+    --background-color: #2e3948;
+    --navbar-color: #2a343d;
+    --text-color: #efefef;
+}
+
+* {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
 
 #welcome-section {
     height: 100vh;
+}
+
+#navbar {
+    background-color: var(--navbar-color);
+
+}
+
+#navbar ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 1.5rem;
+}
+
+#navbar ul li {
+    padding-right: 1.5rem;
+    text-transform: uppercase;
+}
+
+.nav-link {
+    text-decoration: none;
 }
