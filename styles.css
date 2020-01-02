@@ -15,11 +15,20 @@ body {
     color: var(--text-color);
 }
 
+h1 {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 3rem;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
 header {
     margin: auto;
     padding: 0px;
     position: fixed;
     width: 100%;
+    z-index: 1;
 }
 
 #navbar {
@@ -44,6 +53,17 @@ header {
 .nav-link {
     text-decoration: none;
     color: var(--text-color);
+    transition: all 0.5s ease;
+    border-bottom: 1px solid var(--text-color);
+    padding-bottom: 10px;
+}
+.nav-link:hover {
+    border-bottom-width: 10px;
+    padding-bottom: 0px;
+    border-bottom-color: #ea0000;
+}
+.nav-link:active {
+    color: #ea0000;
 }
 
 main {
@@ -58,12 +78,7 @@ main {
 }
 
 #welcome-section h1 {
-    margin: 0 auto;
-    padding: 0 10px;
     padding-top: 40vh;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 3rem;
 }
 
 #welcome-section > p {
@@ -75,6 +90,17 @@ main {
 }
 
 #projects {
+    padding-top: 3rem;
+}
+
+.project-head {
+    padding: 10px;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.project-grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     grid-gap: 1rem;
@@ -84,8 +110,8 @@ main {
     margin-bottom: 3rem;
 }
 
-@media (max-width: 350px) {
-    #projects {
+@media (max-width: 320px) {
+    .project-grid-container {
         grid-template-columns: 1fr;
     }
 }
@@ -93,9 +119,31 @@ main {
 .project-tile {
     text-decoration: none;
     color: var(--text-color);
+    transition: color 0.7s ease;
 }
 
 .project-img {
     width: 100%;
     object-fit: cover;
+}
+
+.project-grid {
+    background-color: var(--navbar-color);
+    filter: saturate(0.4);
+    transition: all 0.7s ease;
+}
+.project-grid:hover {
+    filter: saturate(1.1);
+    padding: 8px;
+}
+.project-grid:hover > .project-tile {
+    color: #ea0000;
+}
+
+.img-caption {
+    padding: 8px;
+    transition: padding 0.7s ease;
+}
+.project-grid:hover .img-caption {
+    padding: 0px;
 }
