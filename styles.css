@@ -29,6 +29,7 @@ header {
     position: fixed;
     width: 100%;
     z-index: 1;
+    box-shadow: var(--background-color);
 }
 
 #navbar {
@@ -56,6 +57,7 @@ header {
     transition: all 0.5s ease;
     border-bottom: 1px solid var(--text-color);
     padding-bottom: 10px;
+    font-size: 1.2rem;
 }
 .nav-link:hover {
     border-bottom-width: 10px;
@@ -143,7 +145,50 @@ main {
 .img-caption {
     padding: 8px;
     transition: padding 0.7s ease;
+    font-size: 1.2rem;
+    font-weight: 350;
 }
 .project-grid:hover .img-caption {
     padding: 0px;
+}
+
+#contact {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 100px 0;
+    min-height: 200px;
+
+}
+
+#contact > div {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    max-width: 800px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+#contact > div > a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px;
+}
+#contact > div > a:hover > .contact-tag {
+    color: brown;
+    padding-left: 5px;
+}
+
+.contact-tag {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.5s ease;
 }
