@@ -8,6 +8,10 @@
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0 auto;
     padding: 0;
@@ -158,7 +162,6 @@ main {
     justify-content: space-between;
     padding: 100px 0;
     min-height: 200px;
-
 }
 
 #contact > div {
@@ -191,4 +194,17 @@ main {
     flex-direction: column;
     justify-content: center;
     transition: all 0.5s ease;
+}
+
+footer {
+    background-color: brown;
+    color: var(--text-color);
+    text-align: center;
+    padding: 50px 0;
+}
+
+footer > div {
+    max-width: 800px;
+    text-align: end;
+    padding: 10px;
 }
