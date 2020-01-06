@@ -27,7 +27,7 @@ h1 {
     margin: 0 auto;
     padding: 0 10px;
 }
-
+/* navbar */
 header {
     margin: auto;
     padding: 0px;
@@ -72,7 +72,7 @@ header {
 .nav-link:active {
     color: #ea0000;
 }
-
+/* main */
 main {
     padding-top: 3rem;
     text-align: center;
@@ -81,7 +81,7 @@ main {
 main:hover ~ #floating-butt {
      visibility: visible;
 }
-
+/* about */
 #welcome-section {
     height: 100vh;
     text-align: center;
@@ -99,6 +99,7 @@ main:hover ~ #floating-butt {
     font-weight: 200;
 }
 
+/* my projects */
 #projects {
     padding-top: 3rem;
 }
@@ -160,6 +161,7 @@ main:hover ~ #floating-butt {
     padding: 0px;
 }
 
+/* contact */
 #contact {
     display: flex;
     flex-direction: column;
@@ -201,6 +203,7 @@ main:hover ~ #floating-butt {
     transition: all 0.5s ease;
 }
 
+/* footer */
 footer {
     background-color: brown;
     color: var(--text-color);
