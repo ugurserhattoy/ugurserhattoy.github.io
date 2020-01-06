@@ -166,7 +166,7 @@ main:hover ~ #floating-butt {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 100px 0;
+    padding: 150px 0;
     min-height: 200px;
     background-color: var(--navbar-color);
 }
