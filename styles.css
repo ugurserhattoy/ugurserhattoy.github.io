@@ -2,6 +2,7 @@
     --background-color: #2e3948;
     --navbar-color: #2a343d;
     --text-color: #efefef;
+    --floating-butt: #9bff37;
 }
 
 * {
@@ -76,6 +77,9 @@ main {
     padding-top: 3rem;
     text-align: center;
     margin: auto;
+}
+main:hover ~ #floating-butt {
+     visibility: visible;
 }
 
 #welcome-section {
@@ -162,6 +166,7 @@ main {
     justify-content: space-between;
     padding: 100px 0;
     min-height: 200px;
+    background-color: var(--navbar-color);
 }
 
 #contact > div {
@@ -199,12 +204,47 @@ main {
 footer {
     background-color: brown;
     color: var(--text-color);
+    padding: 50px 20px;
     text-align: center;
-    padding: 50px 0;
+}
+footer:hover + #floating-butt {
+    visibility: visible;
 }
 
 footer > div {
     max-width: 800px;
-    text-align: end;
+    text-align: start;
     padding: 10px;
+    width: 100%;
+    display: inline-block;
+}
+
+/*floating button*/
+#floating-butt {
+    z-index: 2;
+    position: fixed;
+    background-color: var(--floating-butt);
+    color: var(--navbar-color);
+    border-radius: 60%;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 1.1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    text-align: center;
+    border: 1px solid blueviolet;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+#floating-butt:hover {
+    border: 2px solid blueviolet;
+    font-size: 1.2rem;
+    visibility: visible;
+}
+#floating-butt:active {
+    background-color: var(--text-color);
 }
