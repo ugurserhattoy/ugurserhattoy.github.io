@@ -72,6 +72,12 @@ header {
 .nav-link:active {
     color: #ea0000;
 }
+.nav-link.active {
+    color: #ea0000;
+    border-bottom-color: #ea0000;
+    border-bottom-width: 10px;
+    padding-bottom: 0px;
+}
 /* main */
 main {
     padding-top: 3rem;
@@ -166,8 +172,8 @@ main:hover ~ #floating-butt {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 150px 0;
-    min-height: 200px;
+    padding: 180px 0;
+    min-height: 300px;
     background-color: var(--navbar-color);
 }
 
