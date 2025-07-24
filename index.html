@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="styles.css">
-    <title>Ugur Serhat Toy Portfolio Page</title>
+    <title>Ugur Toy Portfolio Page</title>
 </head>
 <body>
     <!-- Nav section! -->
     <header>
         <nav id="navbar">
-            <ul>
+            <span id="navbar-brand">UST</span>
+            <ul id="nav-menu">
                 <li><a class="nav-link" href="#welcome-section">About</a></li>
                 <li><a class="nav-link" href="#projects">My Projects</a></li>
                 <li><a class="nav-link" href="#contact">Contact</a></li>
@@ -22,86 +23,64 @@
     <main id="main">
         <!-- Welcome section! -->
         <section id="welcome-section">
-            <h1>Hello, I'm Uğur Serhat Toy</h1>
-            <p>a DevOps Engineer <br>
+            <h1>Hello, I'm Uğur Toy</h1>
+            <br>
+            <p>As a DevOps Professional,<br>
+                I am passionate about developing, technology and music.
+                <br>
+                Love to create, build and share!
             </p>
         </section>
         <!-- ! -->
         <!-- Projects section! -->
         <section id="projects">
             <div class="project-head">
-                <h1>Some of My Projects</h1>
-                <hr>
+                <h1>My Projects</h1>
+                <br>
             </div>
-            <div class="project-grid-container">
-                <figure class="project-grid">
-                    <a href="https://play.google.com/store/apps/details?id=com.ust.qspace" target="_blank" class="project-tile">
-                        <img 
-                            class="project-img"
-                            src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/qspace_ss.JPG" 
-                            alt="Q Space Play Store App Page Screen Shot"/>
-                        <figcaption class="img-caption">
-                            Q Space is a math based abstract thinking puzzle game. Q Space is inspired from IQ tests...
-                        </figcaption>
-                    </a>
-                </figure>
-    
-                <figure class="project-grid">
-                    <a href="https://play.google.com/store/apps/details?id=com.ust.kolayhesap" target="_blank" class="project-tile">
-                        <img
-                            class="project-img" 
-                            src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/kolay_ss.JPG" alt="Kolay Hesap Play Store App Page Screen Shot">
-                        <figcaption class="img-caption">
-                            Regular Calculations (Kolay Hesap in Turkish version) is a daily calculations assistant...
-                        </figcaption>
-                    </a>
-                </figure>
-            
-                <figure class="project-grid">
-                    <a href="https://codepen.io/iamust/full/NWPgRwq" target="_blank" class="project-tile">
-                        <img
-                            class="project-img" 
-                            src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/product_ss.JPG" alt="Product Landing Page Screen Shot">
-                        <figcaption class="img-caption">
-                            CSS flexbox mained product landing page example.
-                        </figcaption>
-                    </a>
-                </figure>
-    
-                <figure class="project-grid">
-                    <a href="https://codepen.io/iamust/full/gObRGMa" target="_blank" class="project-tile">
-                        <img 
-                            class="project-img"
-                            src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/technical_ss.JPG" alt="Technical Documentation Page Screen Shot">
-                        <figcaption class="img-caption">
-                            Technical Documentation Page example...
-                        </figcaption>
-                    </a>
-                </figure>
-            </div>
+            <div class="project-grid-container" id="projects-list"></div>
+        </section>
+        <section id="project-detail">
+            <div style="display: none;"></div>
         </section>
         <!-- ! -->
         <!-- Contact section -->
         <section id="contact">
-            <h1>Contact me; we may work together!</h1>
+            <h1>Contact me;</h1>
+            <hr>
+            <p>
+                If you want to get in touch, please find the links below.
+                <br>
+                I am open to new opportunities, collaborations, discussions and sharing.
+            </p>
+            <br>
             <div class="contact-list">
                 <a href="https://github.com/ugurserhattoy" target="_blank" id="profile-link">
-                    <img src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/github_icon.png" alt=""> 
+                    <img src="assets/github_icon.png" alt="">
                     <span class="contact-tag">GitHub</span>
                 </a>
-                <a href="https://www.linkedin.com/in/ugur-serhat-toy-00a351198/" target="_blank" id="profile-link">
-                    <img src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/linkedin_icon.png" alt=""> 
+                <a href="https://www.linkedin.com/in/ugur-toy/" target="_blank" id="profile-link">
+                    <img src="assets/linkedin_icon.png" alt="">
                     <span class="contact-tag">Linked in</span>
                 </a>
-                <a href="mailto:ugurserhattoy@gmail.com" id="profile-link">
-                    <img src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/mail_icon.png" alt=""> 
+                <a href="mailto:ugur.toy@icloud.com" id="profile-link">
+                    <img src="assets/mail_icon.png" alt="">
                     <span class="contact-tag">Mail Me</span>
                 </a>
-                <a href="tel:+905549428757" id="profile-link">
-                    <img src="https://raw.githubusercontent.com/ugurserhattoy/Personal-Portfolio-Page/master/call_icon.png" alt=""> 
+                <!-- <a href="tel:+" id="profile-link">
+                    <img src="assets/call_icon.png" alt=""> 
                     <span class="contact-tag">Call Me</span>
-                </a>
+                </a> -->
             </div>
+            <br>
+            <p> 
+                Feel free to reach out.
+            </p>
+            <br>
+            <p>
+                Thank you for visiting my portfolio page!
+            </p>
+            <br>
         </section>
         <!-- ! -->
     </main>
@@ -109,12 +88,15 @@
         <div>
             &copy; All rights reserved
             <br>
-            2020
+            <span id="current-year"></span>
             <br>
         </div>
     </footer>
     <a id="floating-butt" href="#welcome-section">
         &uarr;
     </a>
+    <script src="project.js"></script>
+    <script src="github.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
