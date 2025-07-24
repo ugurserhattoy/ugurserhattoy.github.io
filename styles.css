@@ -1,8 +1,11 @@
 :root {
-    --background-color: #2e3948;
-    --navbar-color: #2a343d;
+    --background-color: #11151a;
+    --gridbg-color: #11151a;
+    --navbar-color: #212325;
     --text-color: #efefef;
-    --floating-butt: #9bff37;
+    --floating-butt: #ccc9c929;
+    --red-color: #db0202a3;
+    --float-butt-frame: #320078;
 }
 
 * {
@@ -38,9 +41,13 @@ header {
 }
 
 #navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: var(--navbar-color);
     margin: auto;
-    padding: 5px;
+    padding: 4px;
+    padding-left: 40px;
 }
 
 #navbar ul {
@@ -67,14 +74,14 @@ header {
 .nav-link:hover {
     border-bottom-width: 10px;
     padding-bottom: 0px;
-    border-bottom-color: #ea0000;
+    border-bottom-color: var(--red-color);
 }
 .nav-link:active {
-    color: #ea0000;
+    color: var(--red-color);
 }
 .nav-link.active {
-    color: #ea0000;
-    border-bottom-color: #ea0000;
+    color: var(--red-color);
+    border-bottom-color: var(--red-color);
     border-bottom-width: 10px;
     padding-bottom: 0px;
 }
@@ -108,6 +115,7 @@ main:hover ~ #floating-butt {
 /* my projects */
 #projects {
     padding-top: 3rem;
+    padding-bottom: 3rem;
 }
 
 .project-head {
@@ -145,7 +153,7 @@ main:hover ~ #floating-butt {
 }
 
 .project-grid {
-    background-color: var(--navbar-color);
+    background-color: var(--gridbg-color);
     filter: saturate(0.4);
     transition: all 0.7s ease;
 }
@@ -154,7 +162,7 @@ main:hover ~ #floating-butt {
     padding: 8px;
 }
 .project-grid:hover > .project-tile {
-    color: #ea0000;
+    color: var(--red-color);
 }
 
 .img-caption {
@@ -165,6 +173,36 @@ main:hover ~ #floating-butt {
 }
 .project-grid:hover .img-caption {
     padding: 0px;
+}
+
+/* project detail */
+#project-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+#project-detail h1 {
+    /* font-size: 2.5rem; */
+    /* font-weight: 600; */
+    margin-top: 3rem;
+    padding: 0;
+}
+#project-detail img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+#project-detail p {
+    font-size: 1.2rem;
+    /* font-weight: 300;
+    line-height: 1.5;
+    text-align: justify;
+    margin: 0;
+    padding: 0; */
 }
 
 /* contact */
@@ -221,7 +259,7 @@ footer:hover + #floating-butt {
 }
 
 footer > div {
-    max-width: 800px;
+    /* max-width: 800px; */
     text-align: start;
     padding: 10px;
     width: 100%;
@@ -245,15 +283,19 @@ footer > div {
     width: 1.2rem;
     height: 1.2rem;
     text-align: center;
-    border: 1px solid blueviolet;
+    border: 1px solid var(--float-butt-frame);
     visibility: hidden;
     transition: all 0.5s ease;
+    /* padding-right: 1.5rem; */
+    margin-right: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 #floating-butt:hover {
-    border: 2px solid blueviolet;
+    border: 2px solid var(--float-butt-frame);
+    background-color: var(--text-color);
     font-size: 1.2rem;
     visibility: visible;
 }
 #floating-butt:active {
-    background-color: var(--text-color);
+    background-color: var(--navbar-color);
 }
