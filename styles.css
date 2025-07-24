@@ -19,6 +19,7 @@ html {
 body {
     margin: 0 auto;
     padding: 0;
+		padding-top: 60px;
     background-color: var(--background-color);
     color: var(--text-color);
 }
@@ -36,11 +37,17 @@ header {
     padding: 0px;
     position: fixed;
     width: 100%;
-    z-index: 1;
+    z-index: 1000;
     box-shadow: var(--background-color);
 }
 
 #navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 1000;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -55,7 +62,7 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    padding-right: 1.5rem;
+    padding-right: 3rem;
 }
 
 #navbar ul li {
@@ -75,9 +82,6 @@ header {
     border-bottom-width: 10px;
     padding-bottom: 0px;
     border-bottom-color: var(--red-color);
-}
-.nav-link:active {
-    color: var(--red-color);
 }
 .nav-link.active {
     color: var(--red-color);
@@ -123,6 +127,10 @@ main:hover ~ #floating-butt {
     max-width: 800px;
     text-align: center;
     margin: 0 auto;
+}
+
+.project-head h1 {
+    font-weight: 400;
 }
 
 .project-grid-container {
@@ -203,6 +211,55 @@ main:hover ~ #floating-butt {
     text-align: justify;
     margin: 0;
     padding: 0; */
+}
+.project-header-wrapper {
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  background: var(--background-color);
+  transition: opacity 0.4s;
+	/* display: flex; */
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  margin-top: calc(40vh - 240px);
+	margin-bottom: calc(40vh);
+}
+.project-header-img {
+  width: 100%;
+  max-width: 1024px;
+	z-index: 10;
+  margin: 0 auto 16px auto;
+  display: block;
+  border-radius: 20px;
+}
+.project-slider {
+  margin: 20px auto 24px auto;
+  max-width: 240px;
+	min-height: 480px;
+	z-index: 10;
+  text-align: center;
+}
+.project-slider img {
+  width: 100%;
+  max-width: 240px;
+	z-index: 10;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0002;
+}
+.github-readme {
+  background: #f6f8fae5;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 24px 0;
+  overflow-x: auto;
+  font-size: 0.97em;
+}
+.github-readme .md-body {
+  color: #222;
+	text-align: left;
+  margin: 0;
+  padding: 0;
 }
 
 /* contact */
