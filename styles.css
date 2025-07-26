@@ -162,7 +162,7 @@ main:hover ~ #floating-butt {
 
 .project-grid {
     background-color: var(--gridbg-color);
-    filter: saturate(0.4);
+    filter: saturate(0.8);
     transition: all 0.7s ease;
 }
 .project-grid:hover {

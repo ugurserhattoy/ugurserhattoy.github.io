@@ -28,15 +28,15 @@ const PROJECTS = [
     type: "appstore",
     link: "https://play.google.com/store/apps/details?id=com.ust.kolayhesap"
   },
-//   {
-//     key: "portfolio",
-//     title: "Personal Portfolio",
-//     img: "assets/portfolio.png",
-//     summary: "My personal portfolio website.",
-//     description: "This portfolio showcases my work, projects, and contact details, built using HTML, CSS, and JavaScript.",
-//     type: "github",
-//     repo: "ugurserhattoy/ugurserhattoy.github.io"
-//   },
+  {
+    key: "portfolio",
+    title: "Portfolio",
+    img: "assets/portfolio/icon.svg",
+    summary: "My personal portfolio website.",
+    description: "This portfolio showcases my work, projects, and contact details, built using HTML, CSS, and JavaScript.",
+    type: "redirect",
+    link: "https://github.com/ugurserhattoy/ugurserhattoy.github.io"
+  },
 ];
 
 async function renderProjectDetail(project) {

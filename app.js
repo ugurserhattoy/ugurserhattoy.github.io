@@ -4,7 +4,11 @@ function renderProjectList() {
   if (!list) return;
   list.innerHTML = PROJECTS.map(p => `
     <figure class="project-grid">
-      <a href="#/${p.key}" class="project-tile">
+      <a 
+        href="${p.type === 'redirect' ? p.link  : '#/' + p.key}" 
+        class="project-tile"
+        ${p.type === 'redirect' ? 'target="_blank" rel="noopener noreferrer"' : ''}
+      >
         <img class="project-img" src="${p.img}" alt="${p.title} screenshot"/>
         <figcaption class="img-caption">${p.summary}</figcaption>
       </a>
@@ -15,6 +19,7 @@ function renderProjectList() {
 // Add projects when the page loads
 window.addEventListener('DOMContentLoaded', () => {
   renderProjectList();
+  // renderNavbar("home");
 });
 
 // Highlight the active navbar link
@@ -75,7 +80,12 @@ function renderNavbar(mode, project, activeContact) {
   const navBrand = document.getElementById('navbar-brand');
   const navMenu = document.getElementById('nav-menu');
   if (mode === 'home') {
-    navBrand.innerHTML = "UST Portfolio";
+    const project = PROJECTS.find(p => p.key === "portfolio");
+    navBrand.innerHTML = `
+    <a class="navbar-brand" href="#welcome-section">
+      <img src="${project.img}" style="height: 36px;vertical-align:middle;" alt="project logo">
+    </a>
+    `;
     navMenu.innerHTML = `
       <li><a class="nav-link" href="#welcome-section">About</a></li>
       <li><a class="nav-link" href="#projects">My Projects</a></li>
@@ -83,7 +93,9 @@ function renderNavbar(mode, project, activeContact) {
     `;
   } else if (mode === 'project' && project) {
     navBrand.innerHTML = `
+    <a class="navbar-brand" href="#/${project.key}">
       <img src="${project.img}" style="height: 32px;vertical-align:middle;" alt="project logo">
+    </a>
     `;
     navMenu.innerHTML = `
       <li>
@@ -146,6 +158,9 @@ function getRoute() {
   if (hash.includes('/contact')) {
     return { key: hash.replace('/contact', ''), contact: true };
   }
+  // if (hash === "") {
+  //   return { key: "portfolio", contact: false };
+  // }
   return { key: hash, contact: false };
 }
 
@@ -166,9 +181,18 @@ function renderRoute() {
     renderNavbar("home");
     showMain();
     renderProjectList();
-    setPageTitle("Ugur Toy Portfolio Page");
+    setPageTitle("Ugur Toy Portfolio");
     // Show the thank you message:
     document.querySelector('#contact p:last-of-type').style.display = '';
+    return;
+  }
+  // Manage route for redirect projects
+  if (project.type === "redirect" && project.link) {
+    window.open(project.link, "_blank");
+    // or for redirect in the same tab:
+    // window.location.href = project.link;
+    // Route hash reset
+    window.location.hash = '';
     return;
   }
   showProjectDetail();
