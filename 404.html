@@ -1,0 +1,9 @@
+<script type="text/javascript">
+  // Redirect all 404 requests to index.html with the original path as hash
+  var path = window.location.pathname;
+  var search = window.location.search;
+  var hash = window.location.hash;
+  if (path !== "/") {
+    window.location.replace("/#"+path + search + hash);
+  }
+</script>
