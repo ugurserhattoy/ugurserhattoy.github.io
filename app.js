@@ -1,3 +1,5 @@
+// File: app.js
+// FUNCTION DEFINITIONS
 // Add projects to the page (uses the PROJECTS array from project.js)
 function renderProjectList() {
   const list = document.getElementById('projects-list');
@@ -16,20 +18,16 @@ function renderProjectList() {
   `).join('');
 }
 
-// Add projects when the page loads
-window.addEventListener('DOMContentLoaded', () => {
-  renderProjectList();
-  // renderNavbar("home");
-});
-
 // Highlight the active navbar link
 function highlightActiveSection() {
   const navLinks = document.querySelectorAll('.nav-link');
+  const hash = window.location.hash;
   // Keep the previous behavior if on the homepage
-  if (!window.location.hash || !window.location.hash.startsWith('#/')) {
+  if (!hash || !hash.startsWith('#/')) {
     let currentActive = null;
     for (const link of navLinks) {
       const targetId = (link.getAttribute('href') || '').replace(/^#/, '');
+      // console.log(`Checking link: ${link.getAttribute('href')}, targetId: ${targetId}`);
       if (!targetId) continue;
       const section = document.getElementById(targetId);
       if (!section) continue;
@@ -43,12 +41,12 @@ function highlightActiveSection() {
     if (currentActive) currentActive.classList.add('active');
     return;
   }
+  
   // For the project detail page
   // link.href: #/tsa  -> id="project-detail"
   // link.href: #/tsa/contact -> id="contact"
   let projectActive = null;
   let contactActive = null;
-
   for (const link of navLinks) {
     // link.href for example: "#/tsa" or "#/tsa/contact"
     link.classList.remove('active');
@@ -64,6 +62,11 @@ function highlightActiveSection() {
   if (mainSection && contactSection) {
     const mainRect = mainSection.getBoundingClientRect();
     const contactRect = contactSection.getBoundingClientRect();
+    if (window.scrollY < 20) { // If at the top of the page
+      if (projectActive) projectActive.classList.add('active');
+      return;
+    }
+    // Scroll position based active link
     if (mainRect.top <= window.innerHeight / 3 && mainRect.bottom >= window.innerHeight / 3) {
       if (projectActive) projectActive.classList.add('active');
     } else if (contactRect.top <= window.innerHeight / 3 && contactRect.bottom >= window.innerHeight / 3) {
@@ -71,10 +74,6 @@ function highlightActiveSection() {
     }
   }
 }
-// window.addEventListener('DOMContentLoaded', highlightActiveSection);
-window.addEventListener('load', highlightActiveSection);
-// // window.addEventListener('hashchange', highlightActiveSection);
-window.addEventListener('scroll', highlightActiveSection);
 
 function renderNavbar(mode, project, activeContact) {
   const navBrand = document.getElementById('navbar-brand');
@@ -83,7 +82,7 @@ function renderNavbar(mode, project, activeContact) {
     const project = PROJECTS.find(p => p.key === "portfolio");
     navBrand.innerHTML = `
     <a class="navbar-brand" href="#welcome-section">
-      <img src="${project.img}" style="height: 36px;vertical-align:middle;" alt="project logo">
+      <img src="${project.img}" style="height: 42px;vertical-align:middle;" alt="project logo">
     </a>
     `;
     navMenu.innerHTML = `
@@ -97,6 +96,12 @@ function renderNavbar(mode, project, activeContact) {
       <img src="${project.img}" style="height: 32px;vertical-align:middle;" alt="project logo">
     </a>
     `;
+    const navBrandA = navBrand.querySelector('a.navbar-brand');
+    if (navBrandA) {
+      navBrandA.addEventListener('click', function(e) {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      });
+    }
     navMenu.innerHTML = `
       <li>
         <a class="nav-link${activeContact ? "" : " active"}" href="#/${project.key}">
@@ -111,37 +116,29 @@ function renderNavbar(mode, project, activeContact) {
     const projectNav = navMenu.querySelector('.nav-link[href="#/' + project.key + '"]');
     if (projectNav) {
       projectNav.addEventListener('click', function(e) {
-        if (window.location.hash === '#/' + project.key) {
-          e.preventDefault();
-          window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-        // else let the hashchange reload the route
+        const projectRoute = '#/' + project.key;
+        e.preventDefault();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        if (window.location.hash !== projectRoute) {
+          // If route is different, change the hash (Trıgger renderRoute)
+          window.location.hash = projectRoute;
+        } 
       });
     }
     // Contact link event: scroll to contact if hash is already correct, otherwise change hash
     const contactNav = navMenu.querySelector('.nav-link[href="#/' + project.key + '/contact"]');
     if (contactNav) {
       contactNav.addEventListener('click', function(e) {
-        if (window.location.hash === '#/' + project.key + '/contact') {
-          e.preventDefault();
-          const c = document.getElementById('contact');
-          if (c) c.scrollIntoView({behavior: 'smooth'});
-        }
-        // else let the hashchange reload the route
+        e.preventDefault();
+        const c = document.getElementById('contact');
+        if (c) c.scrollIntoView({behavior: 'smooth'});
+        if (window.location.hash !== '#/' + project.key + '/contact') {
+          window.location.hash = '#/' + project.key + '/contact'
+        } // else renderRoute will handle the hash change
       });
     }
   }
 }
-
-// Show or hide the back to top button
-const backToTop = document.getElementById('floating-butt');
-window.addEventListener('scroll', () => {
-  if(window.scrollY > 500){
-    backToTop.style.visibility = 'visible';
-  }else{
-    backToTop.style.visibility = 'hidden';
-  }
-});
 
 function rightsReservedYearUpdate() {
   const currentYear = new Date().getFullYear();
@@ -151,7 +148,11 @@ function rightsReservedYearUpdate() {
     yearElem.textContent = currentYear;
   }
 }
-rightsReservedYearUpdate();
+// Add projects when the page loads
+window.addEventListener('DOMContentLoaded', () => {
+  renderProjectList();
+  // renderNavbar("home");
+});
 
 function getRoute() {
   const hash = window.location.hash.replace(/^#\//, "");
@@ -164,6 +165,10 @@ function getRoute() {
   return { key: hash, contact: false };
 }
 
+// let lastProjectKey = null;
+// let skipNextScroll = false;
+// let lastHash = "";
+
 function renderRoute() {
   const route = getRoute();
   if (!route || route === "" || route === "home") {
@@ -173,6 +178,8 @@ function renderRoute() {
     document.getElementById('project-detail').innerHTML = "";
     // Show the thank you message:
     document.querySelector('#contact p:last-of-type').style.display = '';
+    setFavicon('assets/portfolio/icon.svg', "image/svg+xml");
+    // lastProjectKey = null;
     return;
   }
   // Find and display the project detail
@@ -184,6 +191,8 @@ function renderRoute() {
     setPageTitle("Ugur Toy Portfolio");
     // Show the thank you message:
     document.querySelector('#contact p:last-of-type').style.display = '';
+    setFavicon('assets/portfolio/icon.svg', "image/svg+xml");
+    // lastProjectKey = null;
     return;
   }
   // Manage route for redirect projects
@@ -195,24 +204,37 @@ function renderRoute() {
     window.location.hash = '';
     return;
   }
-  showProjectDetail();
   renderNavbar("project", project, route.contact);
   renderProjectDetail(project);
+  // if (lastProjectKey === route.key) {
+  //   showProjectDetail(false);
+  // } else {
+  //   showProjectDetail();
+  //   lastProjectKey = route.key;
+  // }
+  showProjectDetail();
   setPageTitle(project.title);
+  setFavicon(`assets/${project.key}/icon.png`, "image/png");
   // Hide the thank you message:
   document.querySelector('#contact p:last-of-type').style.display = 'none';
   // If contact scroll is needed
-  if (route.contact) {
-    const c = document.getElementById('contact');
-    if (c) c.scrollIntoView({behavior: 'smooth'});
-  } else {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
+  // if (route.contact) {
+  //   const c = document.getElementById('contact');
+  //   if (c) c.scrollIntoView({behavior: 'smooth'});
+  // } 
+  // else if (window.location.hash && window.location.hash !== lastHash) {
+  //   if (!skipNextScroll) {
+  //     window.scrollTo({top: 0, behavior: 'smooth'});
+  //   }
+  //   skipNextScroll = false;
+  // }
+  // } else {
+  //   window.scrollTo({top: 0, behavior: 'smooth'});
+  // }
+  // lastHash = window.location.hash;
+  // Highlight the active section after rendering
+  setTimeout(highlightActiveSection, 0);
 }
-
-// Run on every route change
-window.addEventListener("hashchange", renderRoute);
-window.addEventListener("DOMContentLoaded", renderRoute);
 
 function showMain() {
   // showWelcome(true);
@@ -221,14 +243,75 @@ function showMain() {
   document.getElementById('project-detail').style.display = "none";
 }
 
-function showProjectDetail() {
+function showProjectDetail(showLoading=false) {
   // showWelcome(false);
   document.getElementById('welcome-section').style.display = "none";
   document.getElementById('projects').style.display = "none";
+  // if (showLoading) {
+  //   document.getElementById('project-detail').innerHTML = '<div class="loading-spinner"></div>';
+  // }
   document.getElementById('project-detail').style.display = "";
+  // highlightActiveSection();
+}
+
+function setFavicon(src, type="image/png") {
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+  link.type = type;
+  link.href = src;
 }
 
 function setPageTitle(title) {
   document.title = title;
   console.log(`Page title set to: ${title}`);
 }
+// FUNCTION DEFINITONS END
+
+// RUN
+// window.addEventListener('DOMContentLoaded', highlightActiveSection);
+// window.addEventListener('hashchange', highlightActiveSection);
+
+// Show or hide the back to top button
+const backToTop = document.getElementById('floating-butt');
+window.addEventListener('scroll', () => {
+  if(window.scrollY > 500){
+    backToTop.style.visibility = 'visible';
+  }else{
+    backToTop.style.visibility = 'hidden';
+  }
+});
+backToTop.addEventListener('click', (e) => {
+  e.preventDefault();
+  // Reset the hash to avoid reloading the page
+  // if (window.location.hash) {
+  //   history.replaceState(null, null, window.location.pathname + window.location.search);
+  // }
+  // // Scroll to top smoothly
+  const hash = window.location.hash;
+  if (hash.startsWith('#/') && hash.indexOf('/', 2) > -1) {
+    const firstSlash = 2; // find the first slash after the hash
+    const secondSlash = hash.indexOf('/', firstSlash);
+    // Reset the hash to the first part (e.g., from #/tsa/contact to #/tsa)
+    const newHash = hash.substring(0, secondSlash);
+    window.location.hash = newHash;
+  } else if (hash && !hash.startsWith('#/')) {
+    // If the hash is not a project route, just reset it
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+rightsReservedYearUpdate();
+
+// Run on every route change
+window.addEventListener("DOMContentLoaded", renderRoute);
+window.addEventListener('load', highlightActiveSection);
+window.addEventListener("hashchange", () => {
+  renderRoute();
+  highlightActiveSection();
+});
+window.addEventListener('scroll', highlightActiveSection);
