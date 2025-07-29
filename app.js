@@ -46,36 +46,45 @@ function highlightActiveSection() {
   // link.href: #/tsa  -> id="project-detail"
   // link.href: #/tsa/contact -> id="contact"
   let projectActive = null;
+  let downloadActive = null;
   let contactActive = null;
   for (const link of navLinks) {
     // link.href for example: "#/tsa" or "#/tsa/contact"
     link.classList.remove('active');
-    if (link.getAttribute('href').endsWith('/contact')) {
+    if (link.getAttribute('href').endsWith('/download')) {
+      downloadActive = link;
+    } else if (link.getAttribute('href').endsWith('/contact')) {
       contactActive = link;
     } else {
       projectActive = link;
     }
   }
   const mainSection = document.getElementById('project-detail');
+  const downloadsSection = document.getElementById('downloads');
   const contactSection = document.getElementById('contact');
 
-  if (mainSection && contactSection) {
-    const mainRect = mainSection.getBoundingClientRect();
-    const contactRect = contactSection.getBoundingClientRect();
-    if (window.scrollY < 20) { // If at the top of the page
-      if (projectActive) projectActive.classList.add('active');
-      return;
-    }
-    // Scroll position based active link
-    if (mainRect.top <= window.innerHeight / 3 && mainRect.bottom >= window.innerHeight / 3) {
-      if (projectActive) projectActive.classList.add('active');
-    } else if (contactRect.top <= window.innerHeight / 3 && contactRect.bottom >= window.innerHeight / 3) {
-      if (contactActive) contactActive.classList.add('active');
-    }
+  if (!mainSection) return;
+
+  const mainRect = mainSection.getBoundingClientRect();
+  const downloadsRect = downloadsSection ? downloadsSection.getBoundingClientRect() : null;
+  const contactRect = contactSection ? contactSection.getBoundingClientRect() : null;
+  // if (mainSection && contactSection) {
+  if (window.scrollY < 20) { // If at the top of the page
+    if (projectActive) projectActive.classList.add('active');
+    return;
   }
+  // Scroll position based active link
+  if (downloadsRect && downloadsRect.top <= window.innerHeight / 3 && downloadsRect.bottom >= window.innerHeight / 3) {
+    if (downloadActive) downloadActive.classList.add('active');
+  } else if (contactRect && contactRect.top <= window.innerHeight / 3 && contactRect.bottom >= window.innerHeight / 3) {
+    if (contactActive) contactActive.classList.add('active');
+  } else if (mainRect.top <= window.innerHeight / 3 && mainRect.bottom >= window.innerHeight / 3) {
+    if (projectActive) projectActive.classList.add('active');
+  }
+  // }
 }
 
-function renderNavbar(mode, project, activeContact) {
+function renderNavbar(mode, project, activeContact, activeDownload) {
   const navBrand = document.getElementById('navbar-brand');
   const navMenu = document.getElementById('nav-menu');
   if (mode === 'home') {
@@ -102,16 +111,32 @@ function renderNavbar(mode, project, activeContact) {
         window.scrollTo({top: 0, behavior: 'smooth'});
       });
     }
-    navMenu.innerHTML = `
+
+    // navbar menu
+    let menuHtml = `
       <li>
         <a class="nav-link${activeContact ? "" : " active"}" href="#/${project.key}">
           ${project.title}
         </a>
       </li>
+    `;
+    if (project.download) {
+      menuHtml += `
+        <li>
+          <a class="nav-link${activeDownload ? " active" : ""}" href="#/${project.key}/download">
+          Download
+          </a>
+        </li>
+      `;
+    }
+    menuHtml += `
       <li>
-        <a class="nav-link${activeContact ? " active" : ""}" href="#/${project.key}/contact">Contact</a>
+        <a class="nav-link${activeContact ? " active" : ""}" href="#/${project.key}/contact">
+        Contact
+        </a>
       </li>
     `;
+    navMenu.innerHTML = menuHtml;
     // Project link event: scroll to top if hash is already correct
     const projectNav = navMenu.querySelector('.nav-link[href="#/' + project.key + '"]');
     if (projectNav) {
@@ -124,6 +149,20 @@ function renderNavbar(mode, project, activeContact) {
           window.location.hash = projectRoute;
         } 
       });
+    }
+    // Download Nav Event
+    if (project.download) {
+      const downloadNav = navMenu.querySelector('.nav-link[href="#/' + project.key + '/download"]');
+      if (downloadNav) {
+        downloadNav.addEventListener('click', function(e) {
+          e.preventDefault();
+          const d = document.getElementById('downloads');
+          if (d) d.scrollIntoView({behavior: 'smooth'});
+          // if (window.location.hash !== '#/' + project.key + '/download') {
+          //   window.location.hash = '#/' + project.key + '/download';
+          // }
+        });
+      }
     }
     // Contact link event: scroll to contact if hash is already correct, otherwise change hash
     const contactNav = navMenu.querySelector('.nav-link[href="#/' + project.key + '/contact"]');
@@ -156,6 +195,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function getRoute() {
   const hash = window.location.hash.replace(/^#\//, "");
+  if (hash.includes('/download')) {
+    return { key: hash.replace('/download', ''), download: true, contact: false };
+  }
   if (hash.includes('/contact')) {
     return { key: hash.replace('/contact', ''), contact: true };
   }
@@ -165,7 +207,7 @@ function getRoute() {
   return { key: hash, contact: false };
 }
 
-// let lastProjectKey = null;
+let lastProjectKey = null;
 // let skipNextScroll = false;
 // let lastHash = "";
 
@@ -179,7 +221,7 @@ function renderRoute() {
     // Show the thank you message:
     document.querySelector('#contact p:last-of-type').style.display = '';
     setFavicon('assets/portfolio/icon.svg', "image/svg+xml");
-    // lastProjectKey = null;
+    lastProjectKey = null;
     return;
   }
   // Find and display the project detail
@@ -192,48 +234,44 @@ function renderRoute() {
     // Show the thank you message:
     document.querySelector('#contact p:last-of-type').style.display = '';
     setFavicon('assets/portfolio/icon.svg', "image/svg+xml");
-    // lastProjectKey = null;
+    lastProjectKey = null;
     return;
   }
   // Manage route for redirect projects
   if (project.type === "redirect" && project.link) {
     window.open(project.link, "_blank");
-    // or for redirect in the same tab:
-    // window.location.href = project.link;
     // Route hash reset
     window.location.hash = '';
     return;
   }
-  renderNavbar("project", project, route.contact);
-  renderProjectDetail(project);
-  // if (lastProjectKey === route.key) {
-  //   showProjectDetail(false);
-  // } else {
-  //   showProjectDetail();
-  //   lastProjectKey = route.key;
-  // }
-  showProjectDetail();
-  setPageTitle(project.title);
-  setFavicon(`assets/${project.key}/icon.png`, "image/png");
+  renderNavbar("project", project, route.contact, route.download);
+  if (lastProjectKey !== project.key) {
+    renderProjectDetail(project);
+    showProjectDetail();
+    setPageTitle(project.title);
+    setFavicon(`assets/${project.key}/icon.png`, "image/png");
+    lastProjectKey = project.key;
+  }
   // Hide the thank you message:
   document.querySelector('#contact p:last-of-type').style.display = 'none';
-  // If contact scroll is needed
-  // if (route.contact) {
-  //   const c = document.getElementById('contact');
-  //   if (c) c.scrollIntoView({behavior: 'smooth'});
-  // } 
-  // else if (window.location.hash && window.location.hash !== lastHash) {
-  //   if (!skipNextScroll) {
-  //     window.scrollTo({top: 0, behavior: 'smooth'});
-  //   }
-  //   skipNextScroll = false;
-  // }
-  // } else {
-  //   window.scrollTo({top: 0, behavior: 'smooth'});
-  // }
-  // lastHash = window.location.hash;
   // Highlight the active section after rendering
   setTimeout(highlightActiveSection, 0);
+}
+
+function renderFooterLinks() {
+  const linksContainer = document.getElementById('footer-links');
+  if (!linksContainer) return;
+  // Home (Portfolio) linki
+  let html = `<a href="#" class="footer-link">Home</a><br>`;
+
+  // Project links except portfolio and redirects
+  PROJECTS
+    .filter(p => p.key !== 'portfolio' && p.type !== 'redirect')
+    .forEach(p => {
+      html += `<a href="#/${p.key}" class="footer-link">${p.title}</a><br>`;
+    });
+
+  linksContainer.innerHTML = html;
 }
 
 function showMain() {
@@ -250,6 +288,7 @@ function showProjectDetail(showLoading=false) {
   // if (showLoading) {
   //   document.getElementById('project-detail').innerHTML = '<div class="loading-spinner"></div>';
   // }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   document.getElementById('project-detail').style.display = "";
   // highlightActiveSection();
 }
@@ -270,7 +309,7 @@ function setPageTitle(title) {
   console.log(`Page title set to: ${title}`);
 }
 // FUNCTION DEFINITONS END
-
+// -----------------------
 // RUN
 // window.addEventListener('DOMContentLoaded', highlightActiveSection);
 // window.addEventListener('hashchange', highlightActiveSection);
@@ -308,7 +347,10 @@ backToTop.addEventListener('click', (e) => {
 rightsReservedYearUpdate();
 
 // Run on every route change
-window.addEventListener("DOMContentLoaded", renderRoute);
+window.addEventListener("DOMContentLoaded", () => {
+  renderFooterLinks();
+  renderRoute();
+});
 window.addEventListener('load', highlightActiveSection);
 window.addEventListener("hashchange", () => {
   renderRoute();
