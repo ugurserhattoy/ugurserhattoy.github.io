@@ -7,7 +7,7 @@ function detectOS() {
     if (userAgent.indexOf("like Mac") !== -1) return "iOS";
     return "Unknown OS";
 }
-console.log("Detected OS:", detectOS());
+// console.log("Detected OS:", detectOS());
 
 async function fetchLatestRelease(repo) {
     const GITHUB_REL = `https://api.github.com/repos/${repo}/releases/latest`;

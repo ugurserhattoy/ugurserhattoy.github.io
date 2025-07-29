@@ -8,7 +8,8 @@ const PROJECTS = [
     summary: "List UK visa sponsorship available companies and track applications...",
     description: "TSA helps you find UK visa sponsorship companies easily. It provides a comprehensive list of companies that sponsor visas, allowing you to track your applications and manage your job search effectively.",
     type: "github",
-    repo: "ugurserhattoy/TSA"
+    repo: "ugurserhattoy/TSA",
+    download: true
   },
   {
     key: "qspace",
@@ -17,7 +18,8 @@ const PROJECTS = [
     summary: "A math-based abstract thinking puzzle game.",
     description: "Q Space is inspired from IQ tests and designed for brain training and fun.",
     type: "appstore",
-    link: "https://play.google.com/store/apps/details?id=com.ust.qspace"
+    link: "https://play.google.com/store/apps/details?id=com.ust.qspace",
+    repo: "ugurserhattoy/Q-Space"
   },
   {
     key: "regular",
@@ -92,40 +94,162 @@ async function renderProjectDetail(project) {
     // GitHub details or App Store link
     if (project.type === "github") {
       try {
-        const repoInfo = await fetch(`https://api.github.com/repos/${project.repo}`).then(r => r.json());
-        lazyHTML += `
-          <h4>GitHub Description:</h4>
-          <p>${repoInfo.description}</p>
-          <a href="https://github.com/${project.repo}" target="_blank" class="action-btn">View on GitHub</a>
-        `;
-
-        // Latest release
+        // // Latest release
+        // const releaseInfo = await fetch(`https://api.github.com/repos/${project.repo}/releases/latest`).then(r => r.json());
+        // if (releaseInfo && releaseInfo.html_url) {
+        //   lazyHTML += `
+        //     <h3>Latest Release:</h3>
+        //     <p><a href="${releaseInfo.html_url}" target="_blank" class="btn-red">${releaseInfo.name || releaseInfo.tag_name}</a></p>
+        //     <ul>
+        //       ${(releaseInfo.assets || []).map(a => `<li><a href="${a.browser_download_url}" target="_blank">${a.name}</a></li>`).join('')}
+        //     </ul>
+        //   `;
+        // }
         const releaseInfo = await fetch(`https://api.github.com/repos/${project.repo}/releases/latest`).then(r => r.json());
-        if (releaseInfo && releaseInfo.html_url) {
+        if (releaseInfo && releaseInfo.assets && releaseInfo.assets.length) {
+          // 1. Split assets into platform-specific objects
+          const downloads = {
+            windows: { file: null, sha: null },
+            linux:   { file: null, sha: null },
+            macos:   { file: null, sha: null },
+          };
+          // 2. Match assets to platforms
+          releaseInfo.assets.forEach(a => {
+            if (a.name.endsWith('.exe')) downloads.windows.file = a;
+            if ((a.name.endsWith('.exe.sha256') || (a.name.endsWith('.sha256') && a.name.toLowerCase().includes('win')))) downloads.windows.sha = a;
+            if (a.name.endsWith('.AppImage')) downloads.linux.file = a;
+            if ((a.name.endsWith('.AppImage.sha256') || (a.name.endsWith('.sha256') && a.name.toLowerCase().includes('appimage')))) downloads.linux.sha = a;
+            if (a.name.endsWith('.dmg')) downloads.macos.file = a;
+            if ((a.name.endsWith('.dmg.sha256') || (a.name.endsWith('.sha256') && a.name.toLowerCase().includes('dmg')))) downloads.macos.sha = a;
+          });
+          let downloadLink = null;
+          const system = detectOS();
+
+          if (system === "Windows") {
+            downloadLink = downloads.windows.file ? downloads.windows.file.browser_download_url : null;
+          } else if (system === "Linux") {
+            downloadLink = downloads.linux.file ? downloads.linux.file.browser_download_url : null;
+          } else if (system === "MacOS") {
+            downloadLink = downloads.macos.file ? downloads.macos.file.browser_download_url : null;
+          } else {
+            downloadLink = null; // Unsupported OS
+          }
+
+          // 3. Download button and release info
           lazyHTML += `
-            <h4>Latest Release:</h4>
-            <p><a href="${releaseInfo.html_url}" target="_blank">${releaseInfo.name || releaseInfo.tag_name}</a></p>
-            <ul>
-              ${(releaseInfo.assets || []).map(a => `<li><a href="${a.browser_download_url}" target="_blank">${a.name}</a></li>`).join('')}
-            </ul>
+          <div class="project-detail">
+          <p>
+            Latest Release: ${releaseInfo.name || releaseInfo.tag_name}
+          </p>
+          <p>
+            <a href="${downloadLink || releaseInfo.html_url}" target="_blank" class="btn-red">
+            Download
+            <span>for ${system || 'your OS'}</span>
+            </a>
+          </p>
+          <div id="ghub-button">
+            <a href="https://github.com/${project.repo}" target="_blank" class="btn-grey">View on GitHub</a>
+          </div>
+          `;
+            // <a href="${releaseInfo.html_url}" target="_blank" class="btn-grey">${releaseInfo.name || releaseInfo.tag_name}</a>
+            // <ul>
+            //   ${(releaseInfo.assets || []).map(a => `<li><a href="${a.browser_download_url}" target="_blank">${a.name}</a></li>`).join('')}
+            // </ul>
+
+                  // const repoInfo = await fetch(`https://api.github.com/repos/${project.repo}`).then(r => r.json());
+          // <h3>${repoInfo.description}</h3>
+          
+          // Readme
+          try {
+            const readmeData = await fetch(`https://api.github.com/repos/${project.repo}/readme`).then(r => r.json());
+            if (readmeData && readmeData.content) {
+              const decodedReadme = atob(readmeData.content.replace(/\n/g, ''));
+              lazyHTML += `
+              <div class="github-readme">
+                <div class="md-body">${marked.parse(decodedReadme)}</div>
+              </div>
+              </div>
+              `; // last div close for <div class="project-detail">
+            }
+          } catch {}
+
+          // 4. Create download links
+          lazyHTML += `
+            <section id="downloads">
+            <h1>Downloads</h1>
+            <div class="download-table">
+              <div class="download-row">
+                <span>Windows amd64</span>
+                <a class="btn-blue" href="${downloads.windows.file ? downloads.windows.file.browser_download_url : '#'}" target="_blank" ${downloads.windows.file ? "" : "style='pointer-events:none;opacity:.5;'"}>Installer.exe</a>
+                <a class="btn-grey" href="${downloads.windows.sha ? downloads.windows.sha.browser_download_url : '#'}" target="_blank" ${downloads.windows.sha ? "" : "style='pointer-events:none;opacity:.5;'"}>sha256</a>
+              </div>
+              <div class="download-row">
+                <span>Linux amd64</span>
+                <a class="btn-blue" href="${downloads.linux.file ? downloads.linux.file.browser_download_url : '#'}" target="_blank" ${downloads.linux.file ? "" : "style='pointer-events:none;opacity:.5;'"}>TSA.AppImage</a>
+                <a class="btn-grey" href="${downloads.linux.sha ? downloads.linux.sha.browser_download_url : '#'}" target="_blank" ${downloads.linux.sha ? "" : "style='pointer-events:none;opacity:.5;'"}>sha256</a>
+              </div>
+              <div class="download-row">
+                <span>MacOS arm64</span>
+                <a class="btn-blue" href="${downloads.macos.file ? downloads.macos.file.browser_download_url : '#'}" target="_blank" ${downloads.macos.file ? "" : "style='pointer-events:none;opacity:.5;'"}>TSA.dmg</a>
+                <a class="btn-grey" href="${downloads.macos.sha ? downloads.macos.sha.browser_download_url : '#'}" target="_blank" ${downloads.macos.sha ? "" : "style='pointer-events:none;opacity:.5;'"}>sha256</a>
+              </div>
+            </div>
+            </section>
           `;
         }
       } catch (e) {
         lazyHTML += `<p style="color:red;">Could not retrieve GitHub data.</p>`;
       }
-      // Readme
-      try {
-        const readmeData = await fetch(`https://api.github.com/repos/${project.repo}/readme`).then(r => r.json());
-        if (readmeData && readmeData.content) {
-          const decodedReadme = atob(readmeData.content.replace(/\n/g, ''));
-          lazyHTML += `<div class="github-readme"><h4>README.md</h4><div class="md-body">${marked.parse(decodedReadme)}</div></div>`;
-        }
-      } catch {}
-    } else if (project.type === "appstore" || project.type === "website") {
+    } else if (project.type === "appstore") {
       if (project.link) {
-        lazyHTML += `<a href="${project.link}" target="_blank" class="action-btn">Go to project</a>`;
+        lazyHTML += `
+        <br>
+        <div class="project-links">
+          <a href="${project.link}" target="_blank" class="btn-blue">
+          App Store
+          </a>
+          <br>
+        `;
+      }
+      if (project.repo) {
+        lazyHTML += `
+          <br>
+          <a 
+            href=https://github.com/${project.repo}
+            target="_blank"
+            class="btn-blue"
+          >
+            View on GitHub
+          </a>
+          <br>
+        `;
+      }
+    }else if (project.type === "website") {
+      if (project.link) {
+        lazyHTML += `
+        <br>
+        <div class="project-links">
+        <a href="${project.link}" target="_blank" class="btn-blue">
+        ${project.title} Page
+        </a>
+        <br>
+        `;
+      }
+      if (project.repo) {
+        lazyHTML += `
+          <br>
+          <a 
+            href=https://github.com/${project.repo}
+            target="_blank"
+            class="btn-grey"
+          >
+            View on GitHub
+          </a>
+          <br>
+        `;
       }
     }
+    lazyHTML += `</div>`;
 
     // Lazy loaded content
     document.getElementById('project-detail-lazy').innerHTML = lazyHTML;
