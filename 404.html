@@ -3,6 +3,11 @@
   var path = window.location.pathname;
   var search = window.location.search;
   var hash = window.location.hash;
+
+  // Normalize the path to lowercase
+  var lowerPath = path.toLowerCase();
+
+  // Redirect to index.html if the path is not the root
   if (path !== "/") {
     window.location.replace("/#"+path + search + hash);
   }
